@@ -1,0 +1,28 @@
+version: "2"
+services:
+  web:
+    image: "node:8"
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      NODE_ENV: production
+      PGHOST: db
+      PGUSER: gth
+      PGPASSWORD: gth
+      PGDATABASE: inventory
+    volumes:
+      - ./:/home/node/app/
+    ports:
+      - 3000:3000
+    links:
+      - db
+    command: "node index.js"
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ".docker/data/postgres/:/docker-entrypoint-initdb.d/"
+    environment:
+      POSTGRES_USER: gth
+      POSTGRES_PASSWORD: gth
+      POSTGRES_DB: inventory

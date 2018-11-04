@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "name": "Aged Dong Ding",
+    "price": 200,
+    "priceNtd": 1000,
+    "thumbnail": "http://globalteahut.org/dongding_files/stacks-image-ea2078f.jpg",
+    "stock": 50,
+    "supplier": null,
+    "supplierAmountNtd": 0,
+    "supplierPercentage": 0,
+    "purchasePrice": 100,
+    "purchasePriceNtd": 500
+  },
+  {
+    "id": 2,
+    "name": "Yuki travel bag",
+    "price": 100,
+    "priceNtd": 500,
+    "thumbnail": "https://static.wixstatic.com/media/6eb917_af224b1a4e1648869478a187193ddd77~mv2_d_2000_1329_s_2.jpg/v1/fill/w_654,h_654,q_85,usm_0.66_1.00_0.01/6eb917_af224b1a4e1648869478a187193ddd77~mv2_d_2000_1329_s_2.jpg",
+    "stock": 2,
+    "supplier": {"id": 1, "name": "Care For Teaware"},
+    "supplierPercentage": 85,
+    "supplierAmountNtd": 0,
+    "purchasePrice": 85,
+    "purchasePriceNtd": 425
+  },
+  {
+    "id": 3,
+    "name": "Sidehandle - Ruo Shi",
+    "price": 300,
+    "priceNtd": 6000,
+    "thumbnail": "https://static.wixstatic.com/media/6eb917_af224b1a4e1648869478a187193ddd77~mv2_d_2000_1329_s_2.jpg/v1/fill/w_654,h_654,q_85,usm_0.66_1.00_0.01/6eb917_af224b1a4e1648869478a187193ddd77~mv2_d_2000_1329_s_2.jpg",
+    "stock": 2,
+    "supplier": {"id": 2, "name": "Ruo Shi"},
+    "supplierPercentage": 0,
+    "supplierAmountNtd": 4000,
+    "purchasePrice": 85,
+    "purchasePriceNtd": 425
+  }
+]
