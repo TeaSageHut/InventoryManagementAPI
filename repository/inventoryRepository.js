@@ -1,6 +1,28 @@
 const {Client} = require('pg');
 const camelcaseKeys = require('camelcase-keys');
 
+const prepareItem = (data) => {
+    const ntdToUsd = 0.033;
+    const convertNtdToUsd = (priceNtd) => priceNtd * ntdToUsd;
+
+    if (data.supplierPercentage) {
+        data.supplierAmount = data.price / 100 * data.supplierPercentage;
+        data.supplierAmountUsd = convertNtdToUsd(data.supplierAmount);
+    }
+
+    if (data.supplierAmount && !data.supplierPercentage) {
+        data.supplierPercentage = data.supplierAmount / data.price * 100;
+
+        if (!data.supplierAmountUsd) {
+            data.supplierAmountUsd = convertNtdToUsd(data.supplierAmount);
+        }
+    }
+
+    if (!data.priceUsd) {
+        data.priceUsd = convertNtdToUsd(data.price);
+    }
+};
+
 const inventoryRepository = {
     getById(id) {
         const client = new Client();
@@ -8,11 +30,16 @@ const inventoryRepository = {
 
         const query = `SELECT * FROM items WHERE id = ${id};`;
 
-        return client.query(query);
+        return client.query(query).then((res) => {
+            const item = camelcaseKeys(res.rows[0]);
+            prepareItem(item);
+
+            return item;
+        });
     },
 
     create(data) {
-        this.prepareItem(data);
+        prepareItem(data);
 
         const client = new Client();
         client.connect();
@@ -31,12 +58,10 @@ const inventoryRepository = {
     },
 
     update(id, data) {
-        return this.getById(id).then((res) => {
-            const item = camelcaseKeys(res.rows[0]);
-
+        return this.getById(id).then((item) => {
             data = Object.assign({}, item, data);
 
-            this.prepareItem(data);
+            prepareItem(data);
 
             const client = new Client();
             client.connect();
@@ -54,28 +79,6 @@ supplier_amount = $7, supplier_amount_usd = $8
                 ]
             );
         });
-    },
-
-    prepareItem(data) {
-        const ntdToUsd = 0.033;
-        const convertNtdToUsd = (priceNtd) => priceNtd * ntdToUsd;
-
-        if (data.supplierPercentage) {
-            data.supplierAmount = data.price / 100 * data.supplierPercentage;
-            data.supplierAmountUsd = convertNtdToUsd(data.supplierAmount);
-        }
-
-        if (data.supplierAmount && !data.supplierPercentage) {
-            data.supplierPercentage = data.supplierAmount / data.price * 100;
-
-            if (!data.supplierAmountUsd) {
-                data.supplierAmountUsd = convertNtdToUsd(data.supplierAmount);
-            }
-        }
-
-        if (!data.priceUsd) {
-            data.priceUsd = convertNtdToUsd(data.price);
-        }
     }
 };
 
