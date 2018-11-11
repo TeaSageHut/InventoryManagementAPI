@@ -5,16 +5,13 @@ const bodyParser = require('body-parser');
 const createInventoryItemController = require('./controller/inventory/createInventoryItemController');
 const updateInventoryItemController = require('./controller/inventory/updateInventoryItemController');
 const getInventoryItemController = require('./controller/inventory/getInventoryItemController');
+const getInventoryItemsController = require('./controller/inventory/getInventoryItemsController');
 const placeOrderController = require('./controller/order/placeOrderController');
 const port = 3000;
 
-const inventoryMock = require('./mocks/inventory.json');
-
 app.use(bodyParser.json());
 
-app.get('/inventory', (req, res) => {
-    res.send(inventoryMock);
-});
+app.get('/inventory', getInventoryItemsController);
 
 app.get('/inventory/:id', getInventoryItemController);
 

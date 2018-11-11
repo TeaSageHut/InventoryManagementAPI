@@ -9,10 +9,15 @@ const prepareOrderItems = (orderItems) => {
     });
 };
 
+function getClient() {
+    const client = new Client();
+    client.connect();
+    return client;
+}
+
 const inventoryRepository = {
     create(data) {
-        const client = new Client();
-        client.connect();
+        const client = getClient();
 
         const orderItems = prepareOrderItems(data.items);
         const total = orderItems.reduce((res, item) => {
@@ -22,12 +27,12 @@ const inventoryRepository = {
         }, 0);
 
         // Save the order
-        const query = `INSERT INTO orders (total, first_name, last_name, email) 
+        const orderQuery = `INSERT INTO orders (total, first_name, last_name, email) 
         VALUES ($1, $2, $3, $4) 
         RETURNING *;`;
 
         return client.query(
-            query,
+            orderQuery,
             [
                 total, data.firstName, data.lastName, data.email
             ]
@@ -37,12 +42,12 @@ const inventoryRepository = {
             // Save the order items
             let queryStack = [];
             orderItems.forEach(item => {
-                const insertQuery = `INSERT INTO order_items(order_id, inventory_item_id, price, qty, total) 
+                const orderItemsQuery = `INSERT INTO order_items(order_id, inventory_item_id, price, qty, total) 
                 VALUES($1, $2, $3, $4, $5) 
                 RETURNING *`;
                 const values = [savedOrder.id, item.inventoryItemId, item.price, item.qty, item.total];
 
-                queryStack.push(client.query(insertQuery, values));
+                queryStack.push(client.query(orderItemsQuery, values));
             });
 
             return Promise.all(queryStack)
